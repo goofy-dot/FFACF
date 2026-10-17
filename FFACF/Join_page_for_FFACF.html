@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+    <style>
+        .h1 {
+            text-align: left;
+            font-family: cursive;
+            background-color:#3c77b7;
+            line-height: 133px;
+            top: 0;
+            margin: 0;
+            height: 133px;
+            font-size: 75px;
+        }
+        body {
+            background: linear-gradient(to right, #73cae9, #577cb7);
+            text-align: left;
+            font-family: cursive;
+            margin: 0;
+        }
+        .submitbtn {
+            background-color: aquamarine; /* Green */
+            border: 1px solid #000;
+            color: rgb(35, 94, 182);
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            font-family: cursive;
+            border-radius: 12px;
+        }
+        input[type="text"], input[type="email"] {
+            width: 20%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 2px solid #000;
+            border-radius: 10px;
+            text-align: center;
+            background-color: rgb(35, 160, 182);
+            color: #000;
+        }
+        .Mainlogo {
+            display: block;
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 10%;
+            height: 20%;
+        }
+        .descriptionmainlogo {
+            text-align: right;
+            font-family: arial;
+            background-color:none;
+            line-height: 133px;
+            top: 0;
+            margin: 0;
+            height: 133px;
+            font-size: 15px;
+        }
+        </style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join for FFACF jr.html</title>
+</head>
+<body>
+<h1 class="h1">Join us today!</h1>
+<b><h1 class="descriptionmainlogo">Friends for a cause foundation jr. club</h1></b>
+<img src="https://www.friendsforcause.org/assets/ffcf-logo-qT0smtGd.png" alt="Friends for a cause foundation logo" class="Mainlogo">
+<input  id="name" type="text" placeholder="Name"><br>
+<input  id="email" type="email" placeholder="Email">
+<input id="submitBtn" class="submitbtn" type="submit" value="Submit" onclick="saveEmail()">
+<br>
+<br>
+<p id="afterSubmit"></p>
+</body>
+</html>
+<script>
+function saveEmail() {
+    if (!document.getElementById("name").value || !document.getElementById("email").value) {
+        document.getElementById("afterSubmit").innerText = "Please fill in both fields.";
+        return;
+    }
+    else {
+        document.getElementById("afterSubmit").innerText = "";
+        const checkemail = localStorage.getItem("email")||"";
+    const email = document.getElementById("email").value;
+    localStorage.setItem("email", email);
+    const theyname = document.getElementById("name").value;
+    localStorage.setItem("name", theyname);
+    document.getElementById("afterSubmit").innerText = "Thank you " + theyname + ", we will contact you through your email once recived may take a few days.";
+    }
+}
+</script>
