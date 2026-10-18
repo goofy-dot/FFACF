@@ -1,1 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f4f5ef">
+    <title>Join the Jr. Club | Friends for a Cause Foundation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            color-scheme: light;
+            --ink: #18352e;
+            --muted: #5e7069;
+            --green: #176b58;
+            --green-dark: #105342;
+            --gold: #d3a23b;
+            --paper: #f4f5ef;
+            --line: #d9dfd8;
+            --white: #fff;
+            font-family: "DM Sans", sans-serif;
+            color: var(--ink);
+            background: var(--paper);
+        }
 
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-width: 320px;
+            min-height: 100vh;
+            margin: 0;
+            background-image: linear-gradient(115deg, rgba(255, 255, 255, .68), transparent 56%), repeating-linear-gradient(0deg, transparent 0, transparent 47px, rgba(24, 53, 46, .025) 48px);
+        }
+
+        .page-shell {
+            width: min(1120px, calc(100% - 48px));
+            margin: 0 auto;
+        }
+
+        .site-header {
+            display: flex;
+            min-height: 104px;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .brand img {
+            display: block;
+            width: 76px;
+            height: 76px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            max-width: 250px;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .header-note {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0;
+            text-transform: uppercase;
+        }
+
+        main {
+            display: grid;
+            min-height: calc(100vh - 170px);
+            grid-template-columns: minmax(0, 1.15fr) minmax(340px, .85fr);
+            align-items: center;
+            gap: clamp(48px, 8vw, 112px);
+            padding: 72px 0 84px;
+        }
+
+        .intro {
+            max-width: 570px;
+            animation: reveal .55s ease-out both;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 22px;
+            color: var(--green);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .eyebrow::before {
+            width: 28px;
+            height: 2px;
+            background: var(--gold);
+            content: "";
+        }
+
+        h1,
+        h2 {
+            margin: 0;
+            font-weight: 400;
+        }
+
+        h1 {
+            max-width: 560px;
+            font-family: "DM Serif Display", Georgia, serif;
+            font-size: clamp(48px, 6vw, 76px);
+            line-height: 1.04;
+        }
+
+        .intro-copy {
+            max-width: 470px;
+            margin: 24px 0 0;
+            color: var(--muted);
+            font-size: 17px;
+            line-height: 1.75;
+        }
+
+        .accent-rule {
+            width: 72px;
+            height: 5px;
+            margin-top: 36px;
+            background: var(--gold);
+        }
+
+        .join-panel {
+            padding: 36px;
+            border: 1px solid var(--line);
+            border-top: 4px solid var(--green);
+            background: var(--white);
+            box-shadow: 0 18px 48px rgba(24, 53, 46, .07);
+            animation: reveal .55s .1s ease-out both;
+        }
+
+        .join-panel h2 {
+            font-family: "DM Serif Display", Georgia, serif;
+            font-size: 32px;
+            line-height: 1.2;
+        }
+
+        .panel-copy {
+            margin: 10px 0 26px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        form {
+            display: grid;
+            gap: 18px;
+        }
+
+        .field {
+            display: grid;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        input {
+            width: 100%;
+            min-height: 50px;
+            padding: 0 14px;
+            border: 1px solid #bac8c0;
+            border-radius: 3px;
+            background: #fff;
+            color: var(--ink);
+            font: inherit;
+            font-size: 15px;
+        }
+
+        input::placeholder {
+            color: #85948d;
+        }
+
+        input:focus-visible {
+            border-color: var(--green);
+            outline: 3px solid rgba(23, 107, 88, .18);
+            outline-offset: 1px;
+        }
+
+        .submitbtn {
+            display: inline-flex;
+            min-height: 52px;
+            align-items: center;
+            justify-content: center;
+            margin-top: 4px;
+            padding: 0 20px;
+            border: 0;
+            border-radius: 8px;
+            background: var(--green);
+            color: var(--white);
+            cursor: pointer;
+            font: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            transition: background-color .18s ease, transform .18s ease;
+
+        }
+        .submitbtn:active {
+        animation: pop 0.2s ease;    
+        }
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .submitbtn:hover {
+            transform: translateY(-1px);
+            background: var(--green-dark);
+        }
+
+        .submitbtn:focus-visible {
+            outline: 3px solid var(--gold);
+            outline-offset: 3px;
+        }
+
+        .form-note {
+            margin: 18px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .site-footer {
+            padding: 18px 0 24px;
+            border-top: 1px solid var(--line);
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .email-preview {
+            min-height: 18px;
+            color: var(--muted);
+            font-size: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        @keyframes glowLetter {
+            0% {
+                text-shadow: 0 0 15px #73cae9;
+                opacity: 0;
+            }
+            100% {
+                text-shadow: none;
+                opacity: 1;
+            }
+        }
+        @keyframes reveal {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 760px) {
+            .page-shell {
+                width: min(100% - 36px, 560px);
+            }
+
+            .site-header {
+                min-height: 84px;
+            }
+
+            .brand {
+                gap: 11px;
+            }
+
+            .brand img {
+                width: 58px;
+                height: 58px;
+            }
+
+            .brand-name {
+                max-width: 190px;
+                font-size: 12px;
+            }
+
+            .header-note {
+                display: none;
+            }
+
+            main {
+                min-height: auto;
+                grid-template-columns: 1fr;
+                gap: 38px;
+                padding: 56px 0 64px;
+            }
+
+            h1 {
+                font-size: clamp(46px, 12vw, 64px);
+            }
+
+            .intro-copy {
+                margin-top: 18px;
+                font-size: 16px;
+            }
+
+            .accent-rule {
+                margin-top: 26px;
+            }
+
+            .join-panel {
+                padding: 28px 22px;
+            }
+
+            .site-footer {
+                padding-bottom: 20px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: .01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-shell">
+        <header class="site-header">
+            <a class="brand" href="/Join_page_for_FFACF.html" aria-label="Friends for a Cause Foundation Jr. Club home">
+                <img src="https://www.friendsforcause.org/assets/ffcf-logo-qT0smtGd.png" alt="">
+                <span class="brand-name">Friends for a Cause Foundation<br>Jr. Club</span>
+            </a>
+            <span class="header-note">A community that cares</span>
+        </header>
+
+        <main>
+            <section class="intro" aria-labelledby="page-title">
+                <p class="eyebrow">Friends for a Cause Foundation</p>
+                <h1 id="page-title">One of the first national youth organizations for everyone</h1>
+                <p class="intro-copy">Join the Jr. Club and hear about ways young people can support their community through Friends for a Cause Foundation.</p>
+                <div class="accent-rule" aria-hidden="true"></div>
+            </section>
+
+            <section class="join-panel" aria-labelledby="form-title">
+                <h2 id="form-title">Join the Jr. Club</h2>
+                <p class="panel-copy">Share your details and our team can get in touch.</p>
+                <form action="/download" method="post">
+                    <div class="field">
+                        <label for="name">Your name</label>
+                        <input id="name" name="name" type="text" placeholder="Enter your name" autocomplete="name" required>
+                    </div>
+                    <div class="field">
+                        <label for="email">Email address</label>
+                        <input id="email" name="email" type="email" placeholder="...@example.com" autocomplete="email" required>
+                        <div id="display" class="email-preview" aria-hidden="true"></div>
+                    </div>
+                    <button id="submitBtn" class="submitbtn" type="submit">Join the club</button>
+                </form>
+                <p class="form-note">Your details will be added to the Jr. Club contact list.</p>
+            </section>
+        </main>
+
+        <footer class="site-footer">Friends for a Cause Foundation · Jr. Club</footer>
+    </div>
+</body>
+</html>
