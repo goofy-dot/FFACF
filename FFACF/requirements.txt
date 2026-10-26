@@ -1,2 +1,2 @@
-psycopg[binary]
-# No external dependencies
+psycopg[binary]>=3.2,<4
+resend>=2.0,<3
