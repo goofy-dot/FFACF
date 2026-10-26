@@ -19,11 +19,11 @@ class JoinPageHandler(SimpleHTTPRequestHandler):
         if route == "/healthz":
             self._send_body(200, "text/plain; charset=utf-8", b"ok")
             return
-        if route not in ("/", "/Join_page_for_FFACF.html"):
+        if route not in ("/", "/index.html"):
             self.send_error(404)
             return
 
-        page = (PAGE_DIRECTORY / "Join_page_for_FFACF.html").read_bytes()
+        page = (PAGE_DIRECTORY / "index.html").read_bytes()
         self._send_body(200, "text/html; charset=utf-8", page)
 
     def do_POST(self):
