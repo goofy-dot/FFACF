@@ -1,2 +1,2 @@
-
+psycopg[binary]
 # No external dependencies
