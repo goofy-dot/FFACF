@@ -242,7 +242,7 @@ def admin_authenticated(handler):
         username, password = decoded.split(":", 1)
 
         valid = (
-            username == "admin"
+            username == "aham"
             and secrets.compare_digest(
                 password,
                 ADMIN_PASSWORD
