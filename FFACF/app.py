@@ -18,7 +18,7 @@ import requests
 BASE_DIR = Path(__file__).resolve().parent
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
-RESEND_API_KEY = os.environ.get("RESEND_API_KEY")
+BREVO_API_KEY = os.environ.get("BREVO_API_KEY")
 EMAIL_FROM = os.environ.get("EMAIL_FROM")
 SITE_NAME = os.environ.get("SITE_NAME", "FFCF Jr. Club")
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
