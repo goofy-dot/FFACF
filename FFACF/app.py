@@ -4,13 +4,13 @@ import html
 import base64
 import secrets
 import logging
+import requests
 
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 import psycopg
-import requests
 
 
 # CONFIGURATION
@@ -18,17 +18,32 @@ import requests
 BASE_DIR = Path(__file__).resolve().parent
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
+
 BREVO_API_KEY = os.environ.get("BREVO_API_KEY")
+
 EMAIL_FROM = os.environ.get("EMAIL_FROM")
-SITE_NAME = os.environ.get("SITE_NAME", "FFCF Jr. Club")
+
+EMAIL_FROM_NAME = os.environ.get(
+    "EMAIL_FROM_NAME",
+    "FFCF Jr. Club"
+)
+
+SITE_NAME = os.environ.get(
+    "SITE_NAME",
+    "FFCF Jr. Club"
+)
+
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
 
 PORT = int(os.environ.get("PORT", "10000"))
 
 MAX_FORM_SIZE = 10000
 
+
 logging.basicConfig(level=logging.INFO)
+
 logger = logging.getLogger("ffcf")
+
 # DATABASE CONNECTION
 
 def get_connection():
@@ -75,7 +90,9 @@ def init_database():
             """)
 
     logger.info("Database initialized successfully.")
-    # REGISTER MEMBER
+
+
+# REGISTER MEMBER
 
 def register_member(name, email):
 
@@ -131,30 +148,43 @@ def register_member(name, email):
             email_added = cur.fetchone() is not None
 
     return member_id, email_added
-    # SEND WELCOME EMAIL
+
+# SEND WELCOME EMAIL USING BREVO
 
 def send_welcome_email(email, name):
 
-    if not RESEND_API_KEY:
-        raise RuntimeError("RESEND_API_KEY is missing.")
+    if not BREVO_API_KEY:
+        raise RuntimeError("BREVO_API_KEY is missing.")
 
     if not EMAIL_FROM:
         raise RuntimeError("EMAIL_FROM is missing.")
 
-    resend.api_key = RESEND_API_KEY
-
     safe_name = html.escape(name)
     safe_site = html.escape(SITE_NAME)
 
-    response = resend.Emails.send({
+    url = "https://api.brevo.com/v3/smtp/email"
 
-        "from": EMAIL_FROM,
+    headers = {
+        "accept": "application/json",
+        "api-key": BREVO_API_KEY,
+        "content-type": "application/json"
+    }
 
-        "to": [email],
+    data = {
+        "sender": {
+            "name": EMAIL_FROM_NAME,
+            "email": EMAIL_FROM
+        },
+
+        "to": [
+            {
+                "email": email
+            }
+        ],
 
         "subject": f"Welcome to {SITE_NAME}!",
 
-        "html": f"""
+        "htmlContent": f"""
         <!DOCTYPE html>
         <html lang="en">
 
@@ -207,20 +237,46 @@ def send_welcome_email(email, name):
         </body>
         </html>
         """
-    })
+    }
 
-    logger.info("Email accepted by Resend for %s", email)
+    response = requests.post(
+        url,
+        headers=headers,
+        json=data,
+        timeout=20
+    )
 
-    return response
-    # ADMIN AUTHENTICATION
+    if not response.ok:
+
+        logger.error(
+            "Brevo API error: HTTP %s - %s",
+            response.status_code,
+            response.text[:1000]
+        )
+
+        response.raise_for_status()
+
+    result = response.json()
+
+    logger.info(
+        "Welcome email accepted by Brevo. Message ID: %s",
+        result.get("messageId")
+    )
+
+    return result
+
+
+# ADMIN AUTHENTICATION
 
 def admin_authenticated(handler):
 
     if not ADMIN_PASSWORD:
+
         handler.send_error(
             503,
             "Admin password is not configured."
         )
+
         return False
 
     authorization = handler.headers.get(
@@ -262,14 +318,16 @@ def admin_authenticated(handler):
             'Basic realm="FFCF Admin"'
         )
 
-        handler.send_header("Cache-Control", "no-store")
+        handler.send_header(
+            "Cache-Control",
+            "no-store"
+        )
 
         handler.end_headers()
 
         return False
 
     return True
-
 
 # GET MEMBERS FROM DATABASE
 
@@ -319,7 +377,9 @@ def get_members(search=""):
             ))
 
             return cur.fetchall()
-            # BUILD ADMIN PAGE
+
+
+# BUILD ADMIN PAGE
 
 def build_admin_page(search=""):
 
@@ -445,9 +505,11 @@ def build_admin_page(search=""):
             }}
 
             @media(max-width: 600px) {{
+
                 body {{
                     padding: 15px;
                 }}
+
             }}
 
         </style>
@@ -504,6 +566,7 @@ def build_admin_page(search=""):
 
     </html>
     """
+
     # WEBSITE HANDLER
 
 class JoinPageHandler(SimpleHTTPRequestHandler):
@@ -515,6 +578,7 @@ class JoinPageHandler(SimpleHTTPRequestHandler):
             directory=str(BASE_DIR),
             **kwargs
         )
+
 
     # GET REQUESTS
 
@@ -581,6 +645,7 @@ class JoinPageHandler(SimpleHTTPRequestHandler):
             "text/html; charset=utf-8",
             page
         )
+
 
     # POST REQUESTS
 
@@ -690,7 +755,7 @@ class JoinPageHandler(SimpleHTTPRequestHandler):
 
             return
 
-        # SEND WELCOME EMAIL
+        # SEND WELCOME EMAIL USING BREVO
 
         if email_added:
 
