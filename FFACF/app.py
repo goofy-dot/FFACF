@@ -10,7 +10,7 @@ from urllib.parse import parse_qs, urlsplit
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 import psycopg
-import resend
+import requests
 
 
 # CONFIGURATION
