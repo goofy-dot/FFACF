@@ -16,6 +16,7 @@ import resend
 # CONFIGURATION
 
 BASE_DIR = Path(__file__).resolve().parent
+INDEX_FILE = BASE_DIR / "template" / "index.html"
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY")
@@ -26,6 +27,7 @@ ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
 PORT = int(os.environ.get("PORT", "10000"))
 
 MAX_FORM_SIZE = 10000
+MAX_FORM_FIELDS = 10
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("ffcf")
@@ -569,7 +571,7 @@ class JoinPageHandler(SimpleHTTPRequestHandler):
 
         try:
 
-            page = (BASE_DIR / "index.html").read_bytes()
+            page = INDEX_FILE.read_bytes()
 
         except FileNotFoundError:
 
@@ -591,33 +593,37 @@ class JoinPageHandler(SimpleHTTPRequestHandler):
             self.send_error(404)
             return
 
-        try:
+        content_length_header = self.headers.get("Content-Length")
 
-            content_length = int(
-                self.headers.get("Content-Length", "0")
-            )
-
-        except ValueError:
+        if content_length_header is None:
 
             self.send_error(400)
+            return
+
+        try:
+            content_length = int(content_length_header)
+        except ValueError:
+            self.send_error(400, "Invalid Content-Length.")
             return
 
         if content_length <= 0 or content_length > MAX_FORM_SIZE:
 
             self.send_error(
-                413,
+                413 if content_length > MAX_FORM_SIZE else 400,
                 "Invalid form size."
             )
 
             return
 
-        form_data = parse_qs(
-            self.rfile.read(content_length).decode(
-                "utf-8",
-                errors="replace"
-            ),
-            keep_blank_values=True
-        )
+        try:
+            form_data = parse_qs(
+                self.rfile.read(content_length).decode("utf-8"),
+                keep_blank_values=True,
+                max_num_fields=MAX_FORM_FIELDS
+            )
+        except (UnicodeDecodeError, ValueError):
+            self.send_error(400, "Invalid form data.")
+            return
 
         name = (
             form_data.get("name", [""])[0]
@@ -769,6 +775,12 @@ class JoinPageHandler(SimpleHTTPRequestHandler):
         self.end_headers()
 
         self.wfile.write(body)
+
+    def do_HEAD(self):
+        self.send_response(405)
+        self.send_header("Allow", "GET, POST")
+        self.send_header("Cache-Control", "no-store")
+        self.end_headers()
 
 
 # START SERVER
